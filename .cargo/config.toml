@@ -1,0 +1,3 @@
+[build]
+# TODO: MAKE SURE THIS IS CORRECT WITH FINAL BOARD DESIGN
+target = "thumbv7em-none-eabi"
