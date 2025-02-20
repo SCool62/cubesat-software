@@ -1,3 +1,11 @@
+[target.'cfg(all(target_arch = "arm", target_os = "none"))']
+# TODO: UPDATE WITH FINAL HARDWARE DESIGN
+runner = "probe-rs run --chip STM32L476VG"
+
 [build]
 # TODO: MAKE SURE THIS IS CORRECT WITH FINAL BOARD DESIGN
 target = "thumbv7em-none-eabi"
+
+[alias]
+rr = "run --release"
+br = "build --release"
