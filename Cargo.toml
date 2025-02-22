@@ -7,10 +7,13 @@ edition = "2024"
 cortex-m = { version = "0.7.7", features = ["critical-section-single-core"]}
 cortex-m-rt = "0.7.5"
 embassy-executor = { version = "0.7.0", features = ["executor-thread", "nightly", "arch-cortex-m"]}
+embassy-futures = "0.1.1"
 # TODO: Set to correct chip pac
 embassy-stm32 = { version = "0.2.0", features = ["stm32l476vg", "memory-x", "time-driver-any", "chrono", "exti"]}
+embassy-sync = "0.6.2"
 embassy-time = { version = "0.4.0", features = ["tick-hz-32_768"]}
 panic-reset = "0.1.1"
+phf = { version = "0.11.3", default-features = false, features = ["macros"] }
 
 [[bin]]
 name = "eps"
