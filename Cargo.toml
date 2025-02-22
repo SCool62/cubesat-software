@@ -4,16 +4,32 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+# Cortex-m stuff
 cortex-m = { version = "0.7.7", features = ["critical-section-single-core"]}
 cortex-m-rt = "0.7.5"
+# Executor
 embassy-executor = { version = "0.7.0", features = ["executor-thread", "nightly", "arch-cortex-m"]}
+# Allows future combiners
 embassy-futures = "0.1.1"
-# TODO: Set to correct chip pac
-embassy-stm32 = { version = "0.2.0", features = ["stm32l476vg", "memory-x", "time-driver-any", "chrono", "exti"]}
+# Useful structs for sharing and sending across tasks
 embassy-sync = "0.6.2"
+# Time synchronizer
 embassy-time = { version = "0.4.0", features = ["tick-hz-32_768"]}
+# Panic handler
 panic-reset = "0.1.1"
+# Static, immutable maps
 phf = { version = "0.11.3", default-features = false, features = ["macros"] }
+
+# HAL
+[dependencies.embassy-stm32]
+version = "0.2.0"
+features = [
+    # TODO: Set to correct chip pac
+    "stm32l476vg", 
+    "memory-x", 
+    "time-driver-any", 
+    "chrono", 
+    "exti"]
 
 [[bin]]
 name = "eps"
