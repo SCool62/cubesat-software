@@ -5,9 +5,9 @@
 use embassy_executor::Spawner;
 use embassy_stm32::Config;
 use embassy_time::Timer;
-
-use panic_reset as _;
 use tasks::current_monitoring::spawn_oc_task;
+
+use {panic_reset as _, defmt_rtt as _};
 
 mod tasks;
 
