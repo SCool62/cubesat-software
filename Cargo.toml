@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "eps"
+    # Will add more members as I start developing other boards
+]
+resolver = "3"
