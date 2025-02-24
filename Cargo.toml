@@ -31,6 +31,7 @@ features = [
     "stm32l476vg", 
     "memory-x", 
     "time-driver-any", 
+    "time",
     "chrono", 
     "exti",
     "defmt"]

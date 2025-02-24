@@ -4,7 +4,6 @@
 
 use embassy_executor::Spawner;
 use embassy_stm32::Config;
-use embassy_time::Timer;
 use tasks::current_monitoring::spawn_oc_task;
 
 use {panic_reset as _, defmt_rtt as _};
@@ -18,7 +17,4 @@ async fn main(spawner: Spawner) {
     let _rail0_signal = spawn_oc_task(&spawner, p.PC0, p.EXTI0, 0).unwrap();
     let _rail1_signal = spawn_oc_task(&spawner, p.PC1, p.EXTI1, 1).unwrap();
 
-    loop {
-        Timer::after_millis(2).await;
-    }
 }
