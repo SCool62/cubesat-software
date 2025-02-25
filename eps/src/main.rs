@@ -2,6 +2,8 @@
 #![no_main]
 #![feature(impl_trait_in_assoc_type)]
 
+use core::time::Duration;
+
 use embassy_executor::Spawner;
 use embassy_stm32::{peripherals::IWDG, wdg::IndependentWatchdog, Config};
 use embassy_time::Timer;
@@ -25,7 +27,7 @@ async fn main(spawner: Spawner) {
 #[embassy_executor::task]
 async fn watchdog(wdg: IWDG) {
     // Watchdog with a 20 second timeout
-    let mut watchdog = IndependentWatchdog::new(wdg, 20_000_000);
+    let mut watchdog = IndependentWatchdog::new(wdg, Duration::from_secs(20).as_micros() as u32);
     // Start watchdog
     watchdog.unleash();
 
