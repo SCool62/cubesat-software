@@ -2,7 +2,7 @@ use embassy_executor::{SpawnError, Spawner};
 use embassy_futures::select::{Either, select};
 use embassy_stm32::{
     exti::{AnyChannel, Channel, ExtiInput},
-    gpio::{AnyPin, Pin, Pull},
+    gpio::{AnyPin, Pin, Pull}
 };
 use embassy_sync::{blocking_mutex::raw::ThreadModeRawMutex, signal::Signal};
 use phf::phf_map;
