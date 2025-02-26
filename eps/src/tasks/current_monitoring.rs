@@ -2,7 +2,7 @@ use embassy_executor::{SpawnError, Spawner};
 use embassy_futures::select::{Either, select};
 use embassy_stm32::{
     exti::{AnyChannel, Channel, ExtiInput},
-    gpio::{AnyPin, Pin, Pull}
+    gpio::{AnyPin, Pin, Pull},
 };
 use embassy_sync::{blocking_mutex::raw::ThreadModeRawMutex, signal::Signal};
 use phf::phf_map;
@@ -72,8 +72,17 @@ pub async fn watch_oc(exti_pin: AnyPin, exti_channel: AnyChannel, signal_num: u8
 }
 
 // Spawns the task and returns the Signal for the task or a SpawnError
-pub fn spawn_oc_task(spawner: &Spawner, exti_pin: impl Pin, exti_channel: impl Channel, signal_num: u8) -> Result<&'static Signal<ThreadModeRawMutex, CurrentMonitorMessage>, SpawnError> {
-    spawner.spawn(watch_oc(exti_pin.degrade(), exti_channel.degrade(), signal_num))?;
+pub fn spawn_oc_task(
+    spawner: &Spawner,
+    exti_pin: impl Pin,
+    exti_channel: impl Channel,
+    signal_num: u8,
+) -> Result<&'static Signal<ThreadModeRawMutex, CurrentMonitorMessage>, SpawnError> {
+    spawner.spawn(watch_oc(
+        exti_pin.degrade(),
+        exti_channel.degrade(),
+        signal_num,
+    ))?;
     // Unwrap is appropriate because the task will fail with a message
     Ok(CURRENT_MONITOR_SIGNALS.get(&signal_num).unwrap())
 }
