@@ -30,7 +30,7 @@ define_cm_signal!(CM_5);
 define_cm_signal!(CM_6);
 define_cm_signal!(CM_7);
 
-static CURRENT_MONITOR_SIGNALS: phf::Map<
+pub static CURRENT_MONITOR_SIGNALS: phf::Map<
     u8,
     &'static Signal<ThreadModeRawMutex, CurrentMonitorMessage>,
 > = phf_map! {

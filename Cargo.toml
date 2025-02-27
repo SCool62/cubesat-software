@@ -2,5 +2,5 @@
 members = [
     "eps"
     # Will add more members as I start developing other boards
-]
+, "shared"]
 resolver = "3"

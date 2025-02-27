@@ -23,6 +23,7 @@ panic-reset = "0.1.1"
 # Static, immutable maps
 phf = { version = "0.11.3", default-features = false, features = ["macros"] }
 static_cell = "2.1.0"
+shared = { path = "../shared" }
 
 # HAL
 [dependencies.embassy-stm32]
