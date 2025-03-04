@@ -45,27 +45,32 @@ pub async fn avionics_communication(uart: &'static mut Uart<'static, Async>) {
     }
 }
 
-async fn handle_message(command: &EpsCommand, publisher: &Publisher<'_, CriticalSectionRawMutex, EpsCommand, 4, 4, 1>) -> Result<(), MessageHandleError> {
+async fn handle_message<'a>(command: &EpsCommand, publisher: &Publisher<'_, CriticalSectionRawMutex, EpsCommand, 4, 4, 1>) -> Result<Option<&'a str>, MessageHandleError> {
     match command {
         // If the command involves a power rail, signal that rail
         EpsCommand::EnablePowerRail(n) => {
-            if let Some(signal) = CURRENT_MONITOR_SIGNALS.get(&n) {
+            if let Some((signal,_)) = CURRENT_MONITOR_SIGNALS.get(&n) {
                 signal.signal(CurrentMonitorMessage::Activate);
             } else {
                 return Err(MessageHandleError::PowerRailNotFound);
             }
         },
         EpsCommand::DisablePowerRail(n) => {
-            if let Some(signal) = CURRENT_MONITOR_SIGNALS.get(&n) {
+            if let Some((signal, _)) = CURRENT_MONITOR_SIGNALS.get(&n) {
                 signal.signal(CurrentMonitorMessage::Deactivate);
             } else {
                 return Err(MessageHandleError::PowerRailNotFound);
             }
         },
+        EpsCommand::GetPowerRailState(n) => {
+            if let Some((_, watch)) = CURRENT_MONITOR_SIGNALS.get(&n) {
+                let _state = watch.try_get().unwrap();
+            }
+        }
         // If the command doesn't message the whole system
         _ => publisher.publish(*command).await
     }
-    Ok(())
+    Ok(None)
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
