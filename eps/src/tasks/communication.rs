@@ -3,6 +3,7 @@ use embassy_futures::select::{select, Either};
 use embassy_stm32::{mode::Async, usart::Uart};
 use embassy_sync::{blocking_mutex::raw::CriticalSectionRawMutex, channel::Channel, pubsub::{PubSubChannel, Publisher}};
 use shared::communication::eps::EpsCommand;
+use thiserror::Error;
 
 use super::current_monitoring::{CurrentMonitorMessage, CURRENT_MONITOR_SIGNALS};
 
@@ -26,8 +27,14 @@ pub async fn avionics_communication(uart: &'static mut Uart<'static, Async>) {
                     Ok(_) => {
                         match EpsCommand::from_bytes(&buf) {
                             Ok(c) => {
-                                if let Err(_e) = handle_message(&c, &publisher).await {
+                                match handle_message(&c, &publisher).await {
                                     // TODO: Respond to avionics board
+                                    Ok(resp) => {
+                                        todo!()
+                                    },
+                                    Err(e) => {
+                                        todo!()
+                                    }
                                 }
                             },
                             Err(_e) => todo!() // TODO: Send response to avionics
@@ -49,22 +56,30 @@ async fn handle_message<'a>(command: &EpsCommand, publisher: &Publisher<'_, Crit
     match command {
         // If the command involves a power rail, signal that rail
         EpsCommand::EnablePowerRail(n) => {
-            if let Some((signal,_)) = CURRENT_MONITOR_SIGNALS.get(&n) {
+            if let Some((signal,_)) = CURRENT_MONITOR_SIGNALS.get(n) {
                 signal.signal(CurrentMonitorMessage::Activate);
+                return Ok(None);
             } else {
                 return Err(MessageHandleError::PowerRailNotFound);
             }
         },
         EpsCommand::DisablePowerRail(n) => {
-            if let Some((signal, _)) = CURRENT_MONITOR_SIGNALS.get(&n) {
+            if let Some((signal, _)) = CURRENT_MONITOR_SIGNALS.get(n) {
                 signal.signal(CurrentMonitorMessage::Deactivate);
+                return Ok(None);
             } else {
                 return Err(MessageHandleError::PowerRailNotFound);
             }
         },
         EpsCommand::GetPowerRailState(n) => {
-            if let Some((_, watch)) = CURRENT_MONITOR_SIGNALS.get(&n) {
-                let _state = watch.try_get().unwrap();
+            if let Some((_, watch)) = CURRENT_MONITOR_SIGNALS.get(n) {
+                if watch.try_get().unwrap() {
+                    return Ok(Some("On"));
+                } else {
+                    return Ok(Some("Off"));
+                }
+            } else {
+                return Err(MessageHandleError::PowerRailNotFound);
             }
         }
         // If the command doesn't message the whole system
@@ -73,7 +88,8 @@ async fn handle_message<'a>(command: &EpsCommand, publisher: &Publisher<'_, Crit
     Ok(None)
 }
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Error, Debug, Clone, Copy, PartialEq)]
 enum MessageHandleError {
+    #[error("Power Rail Not Found")]
     PowerRailNotFound
 }

@@ -25,6 +25,7 @@ phf = { version = "0.11.3", default-features = false, features = ["macros"] }
 static_cell = "2.1.0"
 shared = { path = "../shared" }
 concat-idents = "1.1.5"
+thiserror = { version = "2.0.12", default-features = false }
 
 # HAL
 [dependencies.embassy-stm32]
@@ -37,7 +38,8 @@ features = [
     "time",
     "chrono", 
     "exti",
-    "defmt"]
+    "defmt"
+]
 
 [[bin]]
 name = "eps"
