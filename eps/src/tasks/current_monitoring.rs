@@ -4,7 +4,7 @@ use embassy_stm32::{
     exti::{AnyChannel, Channel, ExtiInput},
     gpio::{AnyPin, Pin, Pull},
 };
-use embassy_sync::{blocking_mutex::raw::{CriticalSectionRawMutex, ThreadModeRawMutex}, signal::Signal, watch::{Receiver, Watch}};
+use embassy_sync::{blocking_mutex::raw::ThreadModeRawMutex, signal::Signal, watch::Watch};
 use phf::phf_map;
 use concat_idents::concat_idents;
 
