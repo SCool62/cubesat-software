@@ -8,6 +8,7 @@ use thiserror::Error;
 use super::current_monitoring::{CurrentMonitorMessage, CURRENT_MONITOR_SIGNALS};
 
 // Signals the EPS to send a message to the avionics board
+// Make sure this buffer size makes sense
 pub static SEND_MESSAGE_CHANNEL: Channel<CriticalSectionRawMutex, &str, 1> = Channel::new();
 // Sends read messages to all the tasks that may need it
 // Make sure this size makes sense
@@ -30,10 +31,14 @@ pub async fn avionics_communication(uart: &'static mut Uart<'static, Async>) {
                                 match handle_message(&c, &publisher).await {
                                     // TODO: Respond to avionics board
                                     Ok(resp) => {
-                                        todo!()
+                                        if resp.is_none() {
+                                            uart.write(b"ok").await.expect("Error writing UART");
+                                            continue;
+                                        }
+                                        uart.write(resp.unwrap().as_bytes()).await.expect("Error writing UART");
                                     },
                                     Err(e) => {
-                                        todo!()
+                                        uart.write(e.as_bytes()).await.expect("Error writing UART");
                                     }
                                 }
                             },
@@ -92,4 +97,12 @@ async fn handle_message<'a>(command: &EpsCommand, publisher: &Publisher<'_, Crit
 enum MessageHandleError {
     #[error("Power Rail Not Found")]
     PowerRailNotFound
+}
+
+impl MessageHandleError {
+    fn as_bytes(&self) -> &'static [u8] {
+        match self {
+            Self::PowerRailNotFound => b"err;404"
+        }
+    }
 }
