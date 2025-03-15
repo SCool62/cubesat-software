@@ -1,3 +1,4 @@
+use concat_idents::concat_idents;
 use embassy_executor::{SpawnError, Spawner};
 use embassy_futures::select::{Either, select};
 use embassy_stm32::{
@@ -6,7 +7,6 @@ use embassy_stm32::{
 };
 use embassy_sync::{blocking_mutex::raw::ThreadModeRawMutex, signal::Signal, watch::Watch};
 use phf::phf_map;
-use concat_idents::concat_idents;
 
 #[allow(unused)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -37,9 +37,11 @@ define_cm_signals!(CM_7);
 
 pub static CURRENT_MONITOR_SIGNALS: phf::Map<
     u8,
-    (&Signal<ThreadModeRawMutex, CurrentMonitorMessage>,
+    (
+        &Signal<ThreadModeRawMutex, CurrentMonitorMessage>,
         // TODO: MAKE SURE 2 IS ENOUGH RECIEVERS
-    &Watch<ThreadModeRawMutex, bool, 2>)
+        &Watch<ThreadModeRawMutex, bool, 2>,
+    ),
 > = phf_map! {
     0u8 => (&CM_0R, &CM_0S),
     1u8 => (&CM_1R, &CM_1S),
@@ -71,7 +73,7 @@ pub async fn watch_oc(exti_pin: AnyPin, exti_channel: AnyChannel, signal_num: u8
             Either::First(_) => {
                 sender.send(interrupt.is_high());
                 // TODO: HANDLE
-            },
+            }
             // The signal was recieved
             Either::Second(message) => match message {
                 CurrentMonitorMessage::Activate => todo!(),
