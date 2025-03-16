@@ -20,6 +20,8 @@ jobs:
       run: rustup update nightly
     - name: Install build target
       run: rustup target add thumbv7em-none-eabi
+    - name: Print installed toolchains
+      run: rustup show
     - name: Build
       run: cargo +nightly build --release
     - name: Install test target
