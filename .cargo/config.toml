@@ -12,3 +12,5 @@ br = "build --release"
 
 epsr = "run --release -p eps"
 epsb = "build --release -p eps"
+
+libtest = "test -p shared -Zbuild-std --target aarch64-apple-darwin"
