@@ -75,8 +75,6 @@ impl CommandParseError {
 
 #[cfg(test)]
 mod tests {
-    use core::num::ParseIntError;
-
     use crate::communication::eps::CommandParseError::*;
 
     #[test]
@@ -102,6 +100,7 @@ mod tests {
 
     #[test]
     fn utf_8_error_as_bytes() {
+        #[allow(invalid_from_utf8)]
         let error = core::str::from_utf8(&[0xC0]).err().unwrap();
         assert_eq!(b"err;504", Utf8Error(error).as_bytes());
     }
