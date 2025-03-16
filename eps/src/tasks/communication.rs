@@ -49,7 +49,7 @@ pub async fn avionics_communication(uart: &'static mut Uart<'static, Async>) {
                                     }
                                 }
                             }
-                            Err(_e) => uart.write(b"err;400").await.expect("Error writing UART"),
+                            Err(e) => uart.write(e.as_bytes()).await.expect("Error writing UART"),
                         }
                     }
                     Err(e) => {

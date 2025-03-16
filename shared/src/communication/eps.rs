@@ -38,7 +38,7 @@ impl EpsCommand {
                         let rail_num = core::str::from_utf8(arg)?.parse::<u8>()?;
                         Ok(EpsCommand::GetPowerRailState(rail_num))
                     },
-                    _ => Err(CommandParseError::CommandNotFound)
+                    _ => Err(CommandParseError::UnknownCommand)
                 }
             },
             None => Err(CommandParseError::EmptyMessage)
@@ -48,8 +48,8 @@ impl EpsCommand {
 
 #[derive(Error, Debug)]
 pub enum CommandParseError {
-    #[error("Command not Found")]
-    CommandNotFound,
+    #[error("Unknown Command")]
+    UnknownCommand,
     #[error("Empty message buffer")]
     EmptyMessage,
     #[error("Incomplete args")]
@@ -58,4 +58,52 @@ pub enum CommandParseError {
     ParseIntError(#[from] ParseIntError),
     #[error("Utf8Error {0}")]
     Utf8Error(#[from] Utf8Error)
+}
+
+impl CommandParseError {
+    pub fn as_bytes(&self) -> &[u8] {
+        use CommandParseError::*;
+        match self {
+            EmptyMessage => b"err;500",
+            UnknownCommand => b"err;501",
+            IncompleteArgs => b"err;502",
+            ParseIntError(_) => b"err;503",
+            Utf8Error(_) => b"err;504"
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use core::num::ParseIntError;
+
+    use crate::communication::eps::CommandParseError::*;
+
+    #[test]
+    fn empty_message_as_bytes() {
+        assert_eq!(b"err;500", EmptyMessage.as_bytes());
+    }
+
+    #[test]
+    fn unknown_command_as_bytes() {
+        assert_eq!(b"err;501", UnknownCommand.as_bytes());
+    }
+
+    #[test]
+    fn incomplete_args_as_bytes() {
+        assert_eq!(b"err;502", IncompleteArgs.as_bytes());
+    }
+
+    #[test]
+    fn parse_int_error_as_bytes() {
+        let error = "test".parse::<u32>().err().unwrap();
+        assert_eq!(b"err;503", ParseIntError(error).as_bytes());
+    }
+
+    #[test]
+    fn utf_8_error_as_bytes() {
+        let error = core::str::from_utf8(&[0xC0]).err().unwrap();
+        assert_eq!(b"err;504", Utf8Error(error).as_bytes());
+    }
+
 }

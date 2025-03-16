@@ -55,6 +55,7 @@ async fn main(spawner: Spawner) {
 #[embassy_executor::task]
 async fn watchdog(wdg: IWDG) {
     // Watchdog with a 20 second timeout
+    // Lossy cast is OK because 20 seconds as micros fits within the available range of a u32
     let mut watchdog = IndependentWatchdog::new(wdg, Duration::from_secs(20).as_micros() as u32);
     // Start watchdog
     watchdog.unleash();
