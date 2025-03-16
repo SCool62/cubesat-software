@@ -16,12 +16,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Install build target
-      run: rustup target add thumbv7em-none-eabi
     - name: Install nightly rust
       run: rustup toolchain install nightly
     - name: Make nightly default
       run: rustup default nightly
+    - name: Install build target
+      run: rustup target add thumbv7em-none-eabi
     - name: Print installed toolchains
       run: rustup show
     - name: Build
