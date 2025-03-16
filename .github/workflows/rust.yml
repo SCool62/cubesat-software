@@ -21,7 +21,7 @@ jobs:
     - name: Install build target
       run: rustup target add thumbv7em-none-eabi
     - name: Build
-      run: cargo build --release
+      run: cargo +nightly build --release --target thumbv7em-none-eabi
     - name: Install test target
       run: rustup target add aarch64-apple-darwin
     - name: Run tests
