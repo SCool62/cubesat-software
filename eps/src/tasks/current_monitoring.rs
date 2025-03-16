@@ -35,13 +35,11 @@ define_cm_signals!(CM_5);
 define_cm_signals!(CM_6);
 define_cm_signals!(CM_7);
 
+type CurrentMonitorSignal = (&'static Signal<ThreadModeRawMutex, CurrentMonitorMessage>, &'static Watch<ThreadModeRawMutex, bool, 2>);
+
 pub static CURRENT_MONITOR_SIGNALS: phf::Map<
     u8,
-    (
-        &Signal<ThreadModeRawMutex, CurrentMonitorMessage>,
-        // TODO: MAKE SURE 2 IS ENOUGH RECIEVERS
-        &Watch<ThreadModeRawMutex, bool, 2>,
-    ),
+    CurrentMonitorSignal,
 > = phf_map! {
     0u8 => (&CM_0R, &CM_0S),
     1u8 => (&CM_1R, &CM_1S),

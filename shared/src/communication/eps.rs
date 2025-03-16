@@ -26,7 +26,7 @@ impl EpsCommand {
                     let rail_num = core::str::from_utf8(arg)?.parse::<u8>()?;
                     Ok(EpsCommand::DisablePowerRail(rail_num))
                 }
-                b"soh" => return Ok(Self::StateOfHealthReq),
+                b"soh" => Ok(Self::StateOfHealthReq),
                 b"gbv" => {
                     let arg = words.next().ok_or(CommandParseError::IncompleteArgs)?;
                     let rail_num = core::str::from_utf8(arg)?.parse::<u8>()?;
