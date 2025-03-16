@@ -19,11 +19,13 @@ jobs:
     - name: Install build target
       run: rustup target add thumbv7em-none-eabi
     - name: Install nightly rust
-      run: rustup update nightly
+      run: rustup toolchain install nightly
+    - name: Make nightly default
+      run: rustup default nightly
     - name: Print installed toolchains
       run: rustup show
     - name: Build
-      run: cargo +nightly build --release
+      run: cargo build --release --target thumbv7em-none-eabi
     - name: Install test target
       run: rustup target add aarch64-apple-darwin
     - name: Run tests
