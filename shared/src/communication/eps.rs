@@ -15,33 +15,31 @@ impl EpsCommand {
     pub fn from_bytes(bytes: &[u8]) -> Result<EpsCommand, CommandParseError> {
         let mut words = bytes.split(|b| b == b";".iter().next().unwrap());
         match words.next() {
-            Some(word) => {
-                match word {
-                    b"pwe" => {
-                        let arg = words.next().ok_or(CommandParseError::IncompleteArgs)?;
-                        let rail_num = core::str::from_utf8(arg)?.parse::<u8>()?;
-                        Ok(EpsCommand::EnablePowerRail(rail_num))
-                    },
-                    b"pwd" => {
-                        let arg = words.next().ok_or(CommandParseError::IncompleteArgs)?;
-                        let rail_num = core::str::from_utf8(arg)?.parse::<u8>()?;
-                        Ok(EpsCommand::DisablePowerRail(rail_num))
-                    },
-                    b"soh" => return Ok(Self::StateOfHealthReq),
-                    b"gbv" => {
-                        let arg = words.next().ok_or(CommandParseError::IncompleteArgs)?;
-                        let rail_num = core::str::from_utf8(arg)?.parse::<u8>()?;
-                        Ok(EpsCommand::GetBatteryVoltage(rail_num))
-                    },
-                    b"gprs" => {
-                        let arg = words.next().ok_or(CommandParseError::IncompleteArgs)?;
-                        let rail_num = core::str::from_utf8(arg)?.parse::<u8>()?;
-                        Ok(EpsCommand::GetPowerRailState(rail_num))
-                    },
-                    _ => Err(CommandParseError::UnknownCommand)
+            Some(word) => match word {
+                b"pwe" => {
+                    let arg = words.next().ok_or(CommandParseError::IncompleteArgs)?;
+                    let rail_num = core::str::from_utf8(arg)?.parse::<u8>()?;
+                    Ok(EpsCommand::EnablePowerRail(rail_num))
                 }
+                b"pwd" => {
+                    let arg = words.next().ok_or(CommandParseError::IncompleteArgs)?;
+                    let rail_num = core::str::from_utf8(arg)?.parse::<u8>()?;
+                    Ok(EpsCommand::DisablePowerRail(rail_num))
+                }
+                b"soh" => return Ok(Self::StateOfHealthReq),
+                b"gbv" => {
+                    let arg = words.next().ok_or(CommandParseError::IncompleteArgs)?;
+                    let rail_num = core::str::from_utf8(arg)?.parse::<u8>()?;
+                    Ok(EpsCommand::GetBatteryVoltage(rail_num))
+                }
+                b"gprs" => {
+                    let arg = words.next().ok_or(CommandParseError::IncompleteArgs)?;
+                    let rail_num = core::str::from_utf8(arg)?.parse::<u8>()?;
+                    Ok(EpsCommand::GetPowerRailState(rail_num))
+                }
+                _ => Err(CommandParseError::UnknownCommand),
             },
-            None => Err(CommandParseError::EmptyMessage)
+            None => Err(CommandParseError::EmptyMessage),
         }
     }
 }
@@ -57,7 +55,7 @@ pub enum CommandParseError {
     #[error("ParseIntError {0}")]
     ParseIntError(#[from] ParseIntError),
     #[error("Utf8Error {0}")]
-    Utf8Error(#[from] Utf8Error)
+    Utf8Error(#[from] Utf8Error),
 }
 
 impl CommandParseError {
@@ -68,7 +66,7 @@ impl CommandParseError {
             UnknownCommand => b"err;501",
             IncompleteArgs => b"err;502",
             ParseIntError(_) => b"err;503",
-            Utf8Error(_) => b"err;504"
+            Utf8Error(_) => b"err;504",
         }
     }
 }
@@ -104,5 +102,4 @@ mod tests {
         let error = core::str::from_utf8(&[0xC0]).err().unwrap();
         assert_eq!(b"err;504", Utf8Error(error).as_bytes());
     }
-
 }
