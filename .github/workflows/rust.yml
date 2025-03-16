@@ -18,7 +18,7 @@ jobs:
     - uses: actions/checkout@v4
     - uses: dtolnay/rust-toolchain@nightly
       with:
-        targets: aarch64-apple-darwin, thumbv7em-none-eabi
+        targets: thumbv7em-none-eabi
         components: rust-src
     - name: Build
       run: cargo build --release --target thumbv7em-none-eabi
