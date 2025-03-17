@@ -52,9 +52,9 @@ pub enum CommandParseError {
     EmptyMessage,
     #[error("Incomplete args")]
     IncompleteArgs,
-    #[error("ParseIntError {0}")]
+    #[error(transparent)]
     ParseIntError(#[from] ParseIntError),
-    #[error("Utf8Error {0}")]
+    #[error(transparent)]
     Utf8Error(#[from] Utf8Error),
 }
 
