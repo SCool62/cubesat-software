@@ -74,8 +74,8 @@ impl CommandParseError {
 #[cfg(test)]
 mod tests {
     use crate::communication::eps::CommandParseError::*;
-    use super::EpsCommand::*;
-    
+    use super::EpsCommand::{self, *};
+
     // EpsCommand parsing tests
     #[test]
     fn enable_power_rail() {
