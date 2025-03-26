@@ -14,7 +14,7 @@ use embassy_stm32::{
 };
 use embassy_time::Timer;
 use static_cell::StaticCell;
-use tasks::{communication, current_monitoring::spawn_oc_task};
+use tasks::{battery::battery_manager, communication, current_monitoring::spawn_oc_task};
 
 use {defmt_rtt as _, panic_reset as _};
 
@@ -29,6 +29,8 @@ async fn main(spawner: Spawner) {
     let p = embassy_stm32::init(Config::default());
 
     spawner.must_spawn(watchdog(p.IWDG));
+
+    spawner.must_spawn(battery_manager());
 
     let _rail0_signal = spawn_oc_task(&spawner, p.PC0, p.EXTI0, 0).unwrap();
     let _rail1_signal = spawn_oc_task(&spawner, p.PC1, p.EXTI1, 1).unwrap();
