@@ -1,6 +1,7 @@
 [workspace]
 members = [
-    "eps"
+    "eps",
     # Will add more members as I start developing other boards
-, "shared"]
+    "shared",
+]
 resolver = "3"
