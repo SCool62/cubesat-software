@@ -73,32 +73,80 @@ impl CommandParseError {
 
 #[cfg(test)]
 mod tests {
-    use crate::communication::eps::CommandParseError::*;
     use super::EpsCommand::{self, *};
+    use crate::communication::eps::CommandParseError::*;
 
     // EpsCommand parsing tests
     #[test]
     fn enable_power_rail() {
-        assert_eq!(EnablePowerRail(0), EpsCommand::from_bytes(b"pwe;0").unwrap());
-        assert_eq!(EnablePowerRail(1), EpsCommand::from_bytes(b"pwe;1").unwrap());
-        assert_eq!(EnablePowerRail(2), EpsCommand::from_bytes(b"pwe;2").unwrap());
-        assert_eq!(EnablePowerRail(3), EpsCommand::from_bytes(b"pwe;3").unwrap());
-        assert_eq!(EnablePowerRail(4), EpsCommand::from_bytes(b"pwe;4").unwrap());
-        assert_eq!(EnablePowerRail(5), EpsCommand::from_bytes(b"pwe;5").unwrap());
-        assert_eq!(EnablePowerRail(6), EpsCommand::from_bytes(b"pwe;6").unwrap());
-        assert_eq!(EnablePowerRail(7), EpsCommand::from_bytes(b"pwe;7").unwrap());
+        assert_eq!(
+            EnablePowerRail(0),
+            EpsCommand::from_bytes(b"pwe;0").unwrap()
+        );
+        assert_eq!(
+            EnablePowerRail(1),
+            EpsCommand::from_bytes(b"pwe;1").unwrap()
+        );
+        assert_eq!(
+            EnablePowerRail(2),
+            EpsCommand::from_bytes(b"pwe;2").unwrap()
+        );
+        assert_eq!(
+            EnablePowerRail(3),
+            EpsCommand::from_bytes(b"pwe;3").unwrap()
+        );
+        assert_eq!(
+            EnablePowerRail(4),
+            EpsCommand::from_bytes(b"pwe;4").unwrap()
+        );
+        assert_eq!(
+            EnablePowerRail(5),
+            EpsCommand::from_bytes(b"pwe;5").unwrap()
+        );
+        assert_eq!(
+            EnablePowerRail(6),
+            EpsCommand::from_bytes(b"pwe;6").unwrap()
+        );
+        assert_eq!(
+            EnablePowerRail(7),
+            EpsCommand::from_bytes(b"pwe;7").unwrap()
+        );
     }
 
     #[test]
     fn disable_power_rail() {
-        assert_eq!(DisablePowerRail(0), EpsCommand::from_bytes(b"pwd;0").unwrap());
-        assert_eq!(DisablePowerRail(1), EpsCommand::from_bytes(b"pwd;1").unwrap());
-        assert_eq!(DisablePowerRail(2), EpsCommand::from_bytes(b"pwd;2").unwrap());
-        assert_eq!(DisablePowerRail(3), EpsCommand::from_bytes(b"pwd;3").unwrap());
-        assert_eq!(DisablePowerRail(4), EpsCommand::from_bytes(b"pwd;4").unwrap());
-        assert_eq!(DisablePowerRail(5), EpsCommand::from_bytes(b"pwd;5").unwrap());
-        assert_eq!(DisablePowerRail(6), EpsCommand::from_bytes(b"pwd;6").unwrap());
-        assert_eq!(DisablePowerRail(7), EpsCommand::from_bytes(b"pwd;7").unwrap());
+        assert_eq!(
+            DisablePowerRail(0),
+            EpsCommand::from_bytes(b"pwd;0").unwrap()
+        );
+        assert_eq!(
+            DisablePowerRail(1),
+            EpsCommand::from_bytes(b"pwd;1").unwrap()
+        );
+        assert_eq!(
+            DisablePowerRail(2),
+            EpsCommand::from_bytes(b"pwd;2").unwrap()
+        );
+        assert_eq!(
+            DisablePowerRail(3),
+            EpsCommand::from_bytes(b"pwd;3").unwrap()
+        );
+        assert_eq!(
+            DisablePowerRail(4),
+            EpsCommand::from_bytes(b"pwd;4").unwrap()
+        );
+        assert_eq!(
+            DisablePowerRail(5),
+            EpsCommand::from_bytes(b"pwd;5").unwrap()
+        );
+        assert_eq!(
+            DisablePowerRail(6),
+            EpsCommand::from_bytes(b"pwd;6").unwrap()
+        );
+        assert_eq!(
+            DisablePowerRail(7),
+            EpsCommand::from_bytes(b"pwd;7").unwrap()
+        );
     }
 
     #[test]
@@ -108,23 +156,53 @@ mod tests {
 
     #[test]
     fn get_battery_voltage() {
-        assert_eq!(GetBatteryVoltage(0), EpsCommand::from_bytes(b"gbv;0").unwrap());
-        assert_eq!(GetBatteryVoltage(1), EpsCommand::from_bytes(b"gbv;1").unwrap());
+        assert_eq!(
+            GetBatteryVoltage(0),
+            EpsCommand::from_bytes(b"gbv;0").unwrap()
+        );
+        assert_eq!(
+            GetBatteryVoltage(1),
+            EpsCommand::from_bytes(b"gbv;1").unwrap()
+        );
     }
 
     #[test]
     fn get_power_rail_state() {
-        assert_eq!(GetPowerRailState(0), EpsCommand::from_bytes(b"gprs;0").unwrap());
-        assert_eq!(GetPowerRailState(1), EpsCommand::from_bytes(b"gprs;1").unwrap());
-        assert_eq!(GetPowerRailState(2), EpsCommand::from_bytes(b"gprs;2").unwrap());
-        assert_eq!(GetPowerRailState(3), EpsCommand::from_bytes(b"gprs;3").unwrap());
-        assert_eq!(GetPowerRailState(4), EpsCommand::from_bytes(b"gprs;4").unwrap());
-        assert_eq!(GetPowerRailState(5), EpsCommand::from_bytes(b"gprs;5").unwrap());
-        assert_eq!(GetPowerRailState(6), EpsCommand::from_bytes(b"gprs;6").unwrap());
-        assert_eq!(GetPowerRailState(7), EpsCommand::from_bytes(b"gprs;7").unwrap());
+        assert_eq!(
+            GetPowerRailState(0),
+            EpsCommand::from_bytes(b"gprs;0").unwrap()
+        );
+        assert_eq!(
+            GetPowerRailState(1),
+            EpsCommand::from_bytes(b"gprs;1").unwrap()
+        );
+        assert_eq!(
+            GetPowerRailState(2),
+            EpsCommand::from_bytes(b"gprs;2").unwrap()
+        );
+        assert_eq!(
+            GetPowerRailState(3),
+            EpsCommand::from_bytes(b"gprs;3").unwrap()
+        );
+        assert_eq!(
+            GetPowerRailState(4),
+            EpsCommand::from_bytes(b"gprs;4").unwrap()
+        );
+        assert_eq!(
+            GetPowerRailState(5),
+            EpsCommand::from_bytes(b"gprs;5").unwrap()
+        );
+        assert_eq!(
+            GetPowerRailState(6),
+            EpsCommand::from_bytes(b"gprs;6").unwrap()
+        );
+        assert_eq!(
+            GetPowerRailState(7),
+            EpsCommand::from_bytes(b"gprs;7").unwrap()
+        );
     }
 
-    // CommandParseError tests 
+    // CommandParseError tests
     #[test]
     fn empty_message_as_bytes() {
         assert_eq!(b"err;500", EmptyMessage.as_bytes());
