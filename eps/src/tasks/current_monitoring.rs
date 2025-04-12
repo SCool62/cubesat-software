@@ -3,7 +3,7 @@ use embassy_executor::{SpawnError, Spawner};
 use embassy_futures::select::{Either, select};
 use embassy_stm32::{
     exti::{AnyChannel, Channel, ExtiInput},
-    gpio::{AnyPin, Pin, Pull},
+    gpio::{AnyPin, OutputOpenDrain, Pin, Pull},
 };
 use embassy_sync::{blocking_mutex::raw::ThreadModeRawMutex, signal::Signal, watch::Watch};
 use phf::phf_map;
@@ -54,9 +54,18 @@ pub static CURRENT_MONITOR_SIGNALS: phf::Map<u8, CurrentMonitorSignal> = phf_map
 // TODO: Make sure pool size is the amount of current sensing circuits
 // PANICS if signal_channel doesn't exist
 #[embassy_executor::task(pool_size = 8)]
-pub async fn watch_oc(exti_pin: AnyPin, exti_channel: AnyChannel, signal_num: u8) {
-    // TODO: SHOULD THIS BE Pull::Down?
-    let mut interrupt = ExtiInput::new(exti_pin, exti_channel, Pull::Down);
+pub async fn watch_oc(
+    output_pin: AnyPin,
+    exti_pin: AnyPin,
+    exti_channel: AnyChannel,
+    signal_num: u8,
+) {
+    let mut interrupt = ExtiInput::new(exti_pin, exti_channel, Pull::Up);
+
+    // Leaves pin floating while set to high
+    let mut output_pin =
+        OutputOpenDrain::new(output_pin, true.into(), embassy_stm32::gpio::Speed::Low);
+
     // Expect is OK here because the task doesn't work without its apropriate signal channel
     let (signal, watch) = CURRENT_MONITOR_SIGNALS
         .get(&signal_num)
@@ -69,13 +78,14 @@ pub async fn watch_oc(exti_pin: AnyPin, exti_channel: AnyChannel, signal_num: u8
         match select(interrupt.wait_for_falling_edge(), signal.wait()).await {
             // The interrupt was triggered
             Either::First(_) => {
-                sender.send(interrupt.is_high());
-                // TODO: HANDLE
+                sender.send(interrupt.get_level().into());
+                // Latch the rail value
+                output_pin.set_level(interrupt.get_level());
             }
             // The signal was recieved
             Either::Second(message) => match message {
-                CurrentMonitorMessage::Activate => todo!(),
-                CurrentMonitorMessage::Deactivate => todo!(),
+                CurrentMonitorMessage::Activate => output_pin.set_high(),
+                CurrentMonitorMessage::Deactivate => output_pin.set_low(),
             },
         };
     }
@@ -84,11 +94,13 @@ pub async fn watch_oc(exti_pin: AnyPin, exti_channel: AnyChannel, signal_num: u8
 // Spawns the task and returns the Signal for the task or a SpawnError
 pub fn spawn_oc_task(
     spawner: &Spawner,
+    output_pin: impl Pin,
     exti_pin: impl Pin,
     exti_channel: impl Channel,
     signal_num: u8,
 ) -> Result<&'static Signal<ThreadModeRawMutex, CurrentMonitorMessage>, SpawnError> {
     spawner.spawn(watch_oc(
+        output_pin.degrade(),
         exti_pin.degrade(),
         exti_channel.degrade(),
         signal_num,

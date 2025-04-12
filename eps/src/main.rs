@@ -30,8 +30,8 @@ async fn main(spawner: Spawner) {
 
     spawner.must_spawn(watchdog(p.IWDG));
 
-    let _rail0_signal = spawn_oc_task(&spawner, p.PC0, p.EXTI0, 0).unwrap();
-    let _rail1_signal = spawn_oc_task(&spawner, p.PC1, p.EXTI1, 1).unwrap();
+    let _rail0_signal = spawn_oc_task(&spawner, p.PB0, p.PC0, p.EXTI0, 0).unwrap();
+    let _rail1_signal = spawn_oc_task(&spawner, p.PB1, p.PC1, p.EXTI1, 1).unwrap();
 
     {
         static UART4: StaticCell<Uart<'_, Async>> = StaticCell::new();
