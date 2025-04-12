@@ -24,16 +24,20 @@ macro_rules! define_cm_signals {
             static sender_name: Watch<ThreadModeRawMutex, bool, 2> = Watch::new_with(true);
         });
     };
+    ($($ch:ident),*) => {
+        $(
+            concat_idents!(reciever_name = $ch, R {
+                static reciever_name: Signal<ThreadModeRawMutex, CurrentMonitorMessage> = Signal::new();
+            });
+            concat_idents!(sender_name = $ch, S {
+                static sender_name: Watch<ThreadModeRawMutex, bool, 2> = Watch::new_with(true);
+            });
+        )*
+    }
 }
 
-define_cm_signals!(CM_0);
-define_cm_signals!(CM_1);
-define_cm_signals!(CM_2);
-define_cm_signals!(CM_3);
-define_cm_signals!(CM_4);
-define_cm_signals!(CM_5);
-define_cm_signals!(CM_6);
-define_cm_signals!(CM_7);
+define_cm_signals! {CM_0, CM_1, CM_2, CM_3, CM_4, CM_5, CM_6, CM_7}
+
 
 type CurrentMonitorSignal = (
     &'static Signal<ThreadModeRawMutex, CurrentMonitorMessage>,
