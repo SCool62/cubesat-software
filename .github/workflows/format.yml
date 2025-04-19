@@ -1,0 +1,31 @@
+name: Format
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  format:
+    permissions:
+      # Give the default GITHUB_TOKEN write permission to commit and push the
+      # added or changed files to the repository.
+      contents: write
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - uses: dtolnay/rust-toolchain@nightly
+      with:
+        components: rustfmt
+    - name: Run cargo fmt
+      run: cargo fmt
+    # Commit changes
+    - uses: stefanzweifel/git-auto-commit-action@v5
+      with:
+          commit_message: format
