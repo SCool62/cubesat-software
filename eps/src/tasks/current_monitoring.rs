@@ -1,3 +1,5 @@
+use core::f64;
+
 use concat_idents::concat_idents;
 use embassy_executor::{SpawnError, Spawner};
 use embassy_futures::select::{Either, select};
@@ -16,14 +18,6 @@ pub enum CurrentMonitorMessage {
 }
 
 macro_rules! define_cm_signals {
-    ($ch:ident) => {
-        concat_idents!(reciever_name = $ch, R {
-            static reciever_name: Signal<ThreadModeRawMutex, CurrentMonitorMessage> = Signal::new();
-        });
-        concat_idents!(sender_name = $ch, S {
-            static sender_name: Watch<ThreadModeRawMutex, bool, 2> = Watch::new_with(true);
-        });
-    };
     ($($ch:ident),*) => {
         $(
             concat_idents!(reciever_name = $ch, R {
@@ -36,7 +30,7 @@ macro_rules! define_cm_signals {
     }
 }
 
-define_cm_signals! {CM_0, CM_1, CM_2, CM_3, CM_4, CM_5, CM_6, CM_7}
+define_cm_signals! { CM_0, CM_1, CM_2, CM_3, CM_4, CM_5, CM_6, CM_7 }
 
 
 type CurrentMonitorSignal = (
@@ -55,9 +49,8 @@ pub static CURRENT_MONITOR_SIGNALS: phf::Map<u8, CurrentMonitorSignal> = phf_map
     7u8 => (&CM_7R, &CM_7S)
 };
 
-// TODO: Make sure pool size is the amount of current sensing circuits
 // PANICS if signal_channel doesn't exist
-#[embassy_executor::task(pool_size = 8)]
+#[embassy_executor::task(pool_size = CURRENT_MONITOR_SIGNALS.len())]
 pub async fn watch_oc(
     output_pin: AnyPin,
     exti_pin: AnyPin,
