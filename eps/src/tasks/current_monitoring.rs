@@ -32,7 +32,6 @@ macro_rules! define_cm_signals {
 
 define_cm_signals! { CM_0, CM_1, CM_2, CM_3, CM_4, CM_5, CM_6, CM_7 }
 
-
 type CurrentMonitorSignal = (
     &'static Signal<ThreadModeRawMutex, CurrentMonitorMessage>,
     &'static Watch<ThreadModeRawMutex, bool, 2>,
