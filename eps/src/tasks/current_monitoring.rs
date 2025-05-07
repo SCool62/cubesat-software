@@ -1,6 +1,6 @@
 use concat_idents::concat_idents;
 use embassy_executor::{SpawnError, Spawner};
-use embassy_futures::select::{select, Either};
+use embassy_futures::select::{Either, select};
 use embassy_stm32::{
     exti::{AnyChannel, Channel, ExtiInput},
     gpio::{AnyPin, OutputOpenDrain, Pin, Pull},
