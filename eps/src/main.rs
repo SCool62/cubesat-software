@@ -6,7 +6,11 @@ use core::time::Duration;
 
 use embassy_executor::Spawner;
 use embassy_stm32::{
-    bind_interrupts, mode::Async, peripherals::{self, IWDG}, usart::{self, Uart}, wdg::IndependentWatchdog, Config
+    Config, bind_interrupts,
+    mode::Async,
+    peripherals::{self, IWDG},
+    usart::{self, Uart},
+    wdg::IndependentWatchdog,
 };
 use embassy_time::Timer;
 use static_cell::StaticCell;
