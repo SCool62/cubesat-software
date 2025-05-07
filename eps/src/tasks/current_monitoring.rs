@@ -1,8 +1,6 @@
-use core::f64;
-
 use concat_idents::concat_idents;
 use embassy_executor::{SpawnError, Spawner};
-use embassy_futures::select::{Either, select};
+use embassy_futures::select::{select, Either};
 use embassy_stm32::{
     exti::{AnyChannel, Channel, ExtiInput},
     gpio::{AnyPin, OutputOpenDrain, Pin, Pull},
@@ -31,7 +29,6 @@ macro_rules! define_cm_signals {
 }
 
 define_cm_signals! { CM_0, CM_1, CM_2, CM_3, CM_4, CM_5, CM_6, CM_7 }
-
 
 type CurrentMonitorSignal = (
     &'static Signal<ThreadModeRawMutex, CurrentMonitorMessage>,
