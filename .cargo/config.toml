@@ -2,10 +2,15 @@
 # TODO: UPDATE WITH FINAL HARDWARE DESIGN
 runner = "probe-rs run --chip STM32L476VG"
 
+rustflags = [
+    # Tell rustc we're using a Cortex M4
+    "-Ctarget-cpu=cortex-m4"
+]
+
 [build]
 # TODO: MAKE SURE THIS IS CORRECT WITH FINAL BOARD DESIGN
-# For Cortex-M4 processors
-target = "thumbv7em-none-eabi"
+# For Cortex-M4 processors with FPU
+target = "thumbv7em-none-eabihf"
 
 [alias]
 rr = "run --release"
